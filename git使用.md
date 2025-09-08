@@ -111,3 +111,6 @@ git config --global alias.st status
 
 *提示：将 `< >` 中的内容替换为实际的值*  
 *使用 `--global` 标志设置的配置适用于系统上的所有仓库*
+
+## 其他
+1.git bash 要在有.git文件的根目录右键使用
