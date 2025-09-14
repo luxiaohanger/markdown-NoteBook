@@ -55,3 +55,9 @@ cout << p.first << " " << p.second << "\n";  // 1 hello
 {first，second}
 ```
 支持运算符重载，例如 == != >   (先比第一个，如果一样比第二个)
+## vector
+注意push_back总作用于末尾，也即新加一位，所以初始化是否设定长度需要考虑
+```cpp
+// 声明 3行 x 4列 的二维vector，所有元素初始化为0
+vector<vector<int>> matrix(3, vector<int>(4));
+```

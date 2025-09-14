@@ -22,7 +22,7 @@ while(left!=right){
 ### 2. 查找并返回
 经典的二分查找，一般要求有序list,和第一类不同的是，**target可能不在list内**，因此，我们需要不存在target的退出机制，一般为left>right  
 ```cpp
-while(left<=right){    //答案可能在 [l,r] ,没有找到时退出
+while(left<=right){    //答案可能在 [l,r] ,没有找到时退出  注意此处不能写为 < ,不能让l==r直接退出
    if(check1)return mid; 
    else if(check2)right=mid-1;
    else left=mid+1;
