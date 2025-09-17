@@ -27,7 +27,7 @@ string类自己维护了一个变量表示长度 调用.length()即可在O(1)时
 ## LinkedList 和 Stack
 对于单向链表，可以把head作为栈顶，增删都ok，但不能是tail，因为pop以后tail无法返回上一个元素  
 *使用链表时要考虑单向性*
-## 双向链表的哨兵节点Sentinel Node/Dummy Node
+## 哨兵节点 Sentinel Node/Dummy Node
 在doubly linked_list中加入一个没有实际数据的哨兵sentinel  
 **可以完全避免对于空指针的判定，减少branch，优化性能**
 ```cpp
