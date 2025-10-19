@@ -67,6 +67,25 @@ m.empty();                            // 是否为空
 m.size();                             // 元素个数
 m.clear();                            // 清空
 ```
+### 遍历和正确删除
+```cpp
+for (auto it = umap.begin(); it != umap.end(); /* 不在这里递增 */) {
+    if (should_delete(it->first)) {
+        // erase返回下一个有效迭代器
+        it = umap.erase(it);
+    } else {
+        ++it; // 只有不删除时才递增
+    }
+}
+// 使用迭代器遍历键为1的所有元素
+//当 equal_range返回的两个迭代器相等时，表示没有找到匹配的元素
+    auto range = multiMap.equal_range(1);
+    for (auto it = range.first; it != range.second; ++it) {
+        
+    }
+```
+**注意，插入操作会导致重新哈希，从而导致迭代器失效**
+
 
 ---
 
@@ -95,4 +114,7 @@ m.clear();                            // 清空
 
 而 `set` 只能对单一对象hash，不支持自定义数据，这是 `map`的优点  
 **区别就在于：是仅查询还是查询并返回相关信息**
+## hash 结构
+桶计数法是哈希结构的一个特例或一种极端简化的实现，数组本身就是一种hash结构--从 `key` 到 `value` 的映射  
+桶计数法就是让 `hash_function` 为恒等函数 `f(x) = x`
 

@@ -24,6 +24,7 @@ equal_range(RandomAccessIterator first,RandomAccessIterator last,const T& value)
 
 
 ## 排序
+**对于复杂度较高的算法，先进行复杂度较低的排序可能是个好选择**
 ```cpp
 //参数为 随机访问迭代器 .begin()/.end()，不能是 list(双向迭代器)
 //范围左闭右开 [first,last)
@@ -45,3 +46,27 @@ bool cmp(const Person &a, const Person &b) {
 ```
 **把相关数据封装在一起，用某个数据对 结构体vector 排序,可以保持卫星数据的相关性，便于比较或者反向访问**  
 反向访问：由 a 成员检索 b --> 由 b 成员检索 a;
+
+### 比较函数类
+1.优先队列和排序的 `cmp` 都可以是类，但有些是类本身，有些是类实例（调用构造函数）
+```cpp
+struct CompareAgeAsc {
+    bool operator()(const Person& a, const Person& b) const {
+        return a.age < b.age;
+    }
+};
+
+//类实例
+sort(people.begin(), people.end(), CompareAgeAsc());
+
+auto it = lower_bound(people.begin(), people.end(), target, CompareAgeAsc());
+
+nth_element(v.begin(), v.begin() + 2, v.end(), MyComparator());
+//类本身
+priority_queue<Person, std::vector<Person>, CompareAgeAsc> pq;
+
+set<Person, CompareAgeAsc> peopleSet;
+
+map<Person, string, CompareAgeAsc> personMap;
+```
+2.优先队列的排序逻辑特殊，其他排序是默认升序，优先队列表示的是优先级（降序）

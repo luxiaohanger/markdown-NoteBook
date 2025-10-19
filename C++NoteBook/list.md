@@ -44,9 +44,9 @@ iterator erase (iterator position);
 iterator erase (iterator first, iterator last);
 
 //返回值 返回迭代器，指向（最后一个）被删除元素的下一个元素
- for(auto it=arr.begin();i<=k;i++) {
-        if(i%2==1)it = arr.erase(it);
-        else it++;
+ for(auto it = arr.begin();i <= k; ) {
+        if(i % 2 == 1)it = arr.erase(it);
+        else it ++;
     }
 ```
 由于erase函数会更新迭代器，因此循环条件要注意返回值要不要更新
