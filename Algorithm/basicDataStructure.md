@@ -59,6 +59,18 @@ cout << p.first << " " << p.second << "\n";  // 1 hello
 ## vector
 注意push_back总作用于末尾，也即新加一位，所以初始化是否设定长度需要考虑
 ```cpp
-// 声明 3行 x 4列 的二维vector，所有元素初始化为0
+//声明 3行 x 4列 的二维vector，所有元素初始化为0
+vector<mydata> arr(n,newdata);
 vector<vector<int>> matrix(3, vector<int>(4));
+//内存布局：不连续。因为每个内层vector是独立分配内存的
+
+//用[first, last)范围内的元素构造
+vector(InputIt first, InputIt last); 
+
+//拷贝构造  使用已有数组名为参数 O(n)
+vector(const vector& other); 
+
+//翻转数组
+//多维数组只交换指针，依然是 O(n)
+reverse(result.begin(), result.end());
 ```

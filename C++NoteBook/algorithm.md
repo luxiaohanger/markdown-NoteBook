@@ -50,22 +50,24 @@ bool cmp(const Person &a, const Person &b) {
 ### 比较函数类
 1.优先队列和排序的 `cmp` 都可以是类，但有些是类本身，有些是类实例（调用构造函数）
 ```cpp
-struct CompareAgeAsc {
-    bool operator()(const Person& a, const Person& b) const {
+struct cmp {
+    bool operator()(const mydata& a, const mydata& b) {
         return a.age < b.age;
     }
 };
 
 //类实例
-sort(people.begin(), people.end(), CompareAgeAsc());
+sort(arr.begin(), arr.end(), cmp());
 
-auto it = lower_bound(people.begin(), people.end(), target, CompareAgeAsc());
+auto it = lower_bound(arr.begin(), arr.end(), target, cmp());
 
-nth_element(v.begin(), v.begin() + 2, v.end(), MyComparator());
+nth_element(arr.begin(), arr.begin() + 2, arr.end(), cmp());
+
+mylist.sort(cmp());
 //类本身
-priority_queue<Person, std::vector<Person>, CompareAgeAsc> pq;
+priority_queue<mydata,vector<mydata>, cmp> pq;
 
-set<Person, CompareAgeAsc> peopleSet;
+set<mydata, cmp> peopleSet;
 
 map<Person, string, CompareAgeAsc> personMap;
 ```
