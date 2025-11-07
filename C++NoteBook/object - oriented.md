@@ -102,6 +102,13 @@ MyVector v1{data, 3};
 MyVector v2(move(v1));//栈分配
 MyVector* v2 = new MyVector(move(v1));//堆分配
  ```
+ ### 构造链调用
+ 派生类构造函数会调用基类构造函数，可以用初始化列表显式指定调用哪个构造函数，否则调用默认构造函数
+ ```cpp
+ Child_class(int a):base_class(a){
+    //
+ }
+ ```
 
 ## 析构函数
 类成员被销毁时，自动调用析构函数  
@@ -739,4 +746,22 @@ animal->speak();
         return 0;
     }
     ```
+
+    ## 声明和定义
+    
+
+| **特征**                | **声明 (Declaration)**                          | **定义 (Definition)**                          | **必须一致** | **特殊规则**                                                                 |
+|-------------------------|------------------------------------------------|------------------------------------------------|--------------|-----------------------------------------------------------------------------|
+| **非静态成员变量**      | `int value;`                                   | 类内初始化：`int value = 10;` (C++11+)         | 是           | 1. 类型必须完全匹配<br>2. 类外不能重新定义                                  |
+| **静态成员变量**        | `static int count;`                            | 类外定义：`int Class::count = 0;`              | 是           | 1. C++17支持`inline static`类内定义<br>2. 类外定义不带`static`关键字        |
+| **普通成员函数**        | `void func(int param);`                        | `void Class::func(int param) { ... }`          | 签名必须一致 | 1. 定义需类名限定<br>2. `const`/`volatile`限定符必须一致                   |
+| **虚函数**              | `virtual void vfunc() const;`                  | `void Class::vfunc() const { ... }`            | 签名必须一致 | 1. 派生类声明可用`override`<br>2. 定义处禁止`virtual`/`override`           |
+| **纯虚函数**            | `virtual void pure() = 0;`                     | 可选类外定义：`void Class::pure() { ... }`     | 签名必须一致 | 1. 声明必须有`=0`<br>2. 定义不能有`=0`                                     |
+| **构造函数**            | `ClassName(params);`                           | `ClassName::ClassName(params) : init{...} {...}` | 名称必须一致 | 1. 无返回类型<br>2. 初始化列表仅在定义处                                   |
+| **析构函数**            | `~ClassName();`                                | `ClassName::~ClassName() { ... }`              | 名称必须一致 | 1. 无返回类型<br>2. 虚析构函数在派生类定义中不需`virtual`                  |
+| **模板成员函数**        | `template<typename T> void tfunc(T param);`    | `template<typename T> void Class::tfunc(T param) {...}` | 是           | 1. 通常声明定义在一起<br>2. 类外定义需完整模板前缀                         |
+| **静态成员函数**        | `static void sfunc();`                         | `void Class::sfunc() { ... }`                  | 签名必须一致 | 1. 定义不带`static`<br>2. 不能使用`const`/`volatile`                       |
+| **默认参数**            | 声明处指定：`void f(int x = 0);`               | 定义处禁止指定默认参数                         | -            | 只能在**一处**指定（通常在声明处）                                         |
+| **constexpr成员**       | `constexpr int size = 10;` (C++11+)            | 类内直接初始化                                 | 是           | 1. 必须是字面值类型<br>2. C++14起可在类外定义                              |
+| **友元函数**            | `friend void friendFunc();`                    | 类外独立定义：`void friendFunc() { ... }`      | 不适用       | 1. 声明在类内<br>2. 定义在类外全局作用域                                   |
 

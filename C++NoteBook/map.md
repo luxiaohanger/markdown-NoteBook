@@ -31,6 +31,7 @@ map<int, string> m4(m2.begin(), m2.end());   // 迭代器区间构造
 ```cpp
 m.insert({3,"c"});                  // 返回 pair<iterator,bool>
 m[4] = "d";                         // operator[] 插入或修改
+//无需判断 key 是否存在，m[4]调用时如果不存在则初始化一个并插入
 m.emplace(5, "e");                   // 原地构造
 ```
 

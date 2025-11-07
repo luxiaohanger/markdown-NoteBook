@@ -69,7 +69,7 @@ unordered_set<int> us(100);         // 预留桶大小的哈希集合
 
 ###  修改操作
 
-* `insert(val)` → 插入元素，返回 pair\<iterator, bool>
+* `insert(val)` → 插入元素，返回 pair<iterator, bool>
 * `erase(val)` → 按值删除
 * `erase(it)` → 按迭代器删除
 * `erase(first, last)` → 范围删除
@@ -99,8 +99,12 @@ unordered_set<int> us(100);         // 预留桶大小的哈希集合
 ###  `set` 专有的有序操作
 
 * `lower_bound(val)` → 返回第一个 **不小于 val** 的迭代器
+
+//可以理解为找一个位置给 val ，因此是第一个不小于的
 * `upper_bound(val)` → 返回第一个 **大于 val** 的迭代器
 * `equal_range(val)` → 返回一对迭代器，表示等于 val 的范围（在 `set` 中要么一个元素，要么空）
+
+没有找到则返回end
 
 ---
 

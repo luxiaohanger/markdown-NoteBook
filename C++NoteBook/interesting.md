@@ -96,5 +96,11 @@ vector<node> tree(n + 1);
    std::vector<int> v(5); // 5个0（值初始化）
    std::array<int, 3> a;  // 未初始化（与内置数组相同）
    ```
+## 三目运算符
+`bool ? expression1 : expression2;`
 
+1.可以单独出现
+
+2.expression 必须是表达式，有返回值，不能是一般语句
+（赋值语句的返回值是左边被赋予的新值）
 

@@ -10,7 +10,7 @@ bool binary_search(RandomAccessIterator first, RandomAccessIterator last,const T
 ```
 其他扩展
 ```cpp
-//以下三个函数都可以添加自定义cmp函数作为第四个参数
+//以函数都可以添加自定义cmp函数
 
 //返回 第一个 >= value 的元素位置（迭代器）。如果所有元素都比 value 小，返回 last。
 RandomAccessIterator lower_bound(RandomAccessIterator first,RandomAccessIterator last,const T& value);
@@ -51,9 +51,10 @@ bool cmp(const Person &a, const Person &b) {
 1.优先队列和排序的 `cmp` 都可以是类，但有些是类本身，有些是类实例（调用构造函数）
 ```cpp
 struct cmp {
-    bool operator()(const mydata& a, const mydata& b) {
+    bool operator()(const mydata& a, const mydata& b) const {
         return a.age < b.age;
     }
+    //const 有必要加
 };
 
 //类实例
