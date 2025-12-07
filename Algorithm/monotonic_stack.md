@@ -54,3 +54,47 @@ for(int i = 0;i < n;++i){
 
 细节：左右都不存在，即为根节点；左右存一，即为父节点；左右都存在，则较小者为父节点
 
+# 单调队列
+用 `O(1)` 时间维护区间最值
+
+核心思想是：**提前丢弃不可能成为最值的元素**
+```cpp
+struct monoqueue {
+    //用双端队列做底层容器
+    deque<int> dq;
+
+    void pushval(int val) {
+        //和单调栈类似，把小于新元素的队尾元素出队
+        while (!dq.empty() && val > dq.back()) {
+            dq.pop_back();
+        }
+        dq.push_back(val);
+    }
+
+    void popval(int val) {
+        //出队时，只有待出队元素是队首元素时需要出队
+        //不会是最值的元素已经被提前丢弃
+        if (!dq.empty() && val == dq.front())dq.pop_front();
+    }
+
+    void pushidx(int idx, const vector<int> &arr) {
+        while (!dq.empty() && arr[idx] > arr[dq.back()]) {
+            dq.pop_back();
+        }
+        dq.push_back(idx);
+    }
+
+    void popidx(int idx) {
+        if (!dq.empty() && idx == dq.front())dq.pop_front();
+    }
+
+    int getExtremval() {
+        return dq.front();
+    }
+
+    int getExtremidx() {
+        return dq.front();
+    }
+};
+```
+注意：出队操作时，相等关系依据题意而定，如果是需要位置关系的，要在队列中存放元素引索，以确保唯一对应
