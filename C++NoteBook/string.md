@@ -15,5 +15,10 @@ int num = stoi(str);
 //数字变量转字符串
 s += to_string(num);
 
+//减少字符串末尾的长度
+std::string str = "Hello World!";
+str.resize(5);  // 现在 str = "Hello"
 
+std::string str = "Hello World!";
+str.resize(str.length() - 6);  // 删除最后6个字符
 ```

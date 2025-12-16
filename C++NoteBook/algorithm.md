@@ -58,6 +58,8 @@ struct cmp {
 };
 
 //类实例
+//这些算法函数通常接受一个比较函数对象（实例）作为参数，因此可以直接传入Lambda表达式（Lambda表达式实际上是一个匿名函数对象）
+//把 cmp() 直接替换为 [](const auto& a,const auto& b){return a.age < b.age;}
 sort(arr.begin(), arr.end(), cmp());
 
 auto it = lower_bound(arr.begin(), arr.end(), target, cmp());

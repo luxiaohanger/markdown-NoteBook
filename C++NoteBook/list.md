@@ -70,7 +70,7 @@ iterator erase (iterator first, iterator last);
 | `insert(pos, value)` | 指定位置插入 | O(1) |
 | `emplace(pos, args...)` | 指定位置直接构造 | O(1) |
 
-*insert:新元素会被插入到pos所指向的元素​​之前*​​
+*insert:新元素会被插入到pos所指向的元素​​之前，也即作为这个位置新的元素*​​
 
 *emplace :当自定义类有构造函数时直接传递参数，无构造函数时使用聚合初始化：dataList.emplace_back(SimpleData{1, "Alice", 99.5});*
 
