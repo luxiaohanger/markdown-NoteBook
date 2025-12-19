@@ -128,33 +128,103 @@ for (int i = 1;i<=n;++i) {
         }
     }
 ```
-#### 点双连通分量
+## 点双连通分量
+在一张连通的无向图中，对于两个点 𝑢 和 𝑣，如果无论删去哪个点（只能删去一个，且不能删 𝑢 和 𝑣 自己）都不能使它们不连通，我们就说 𝑢 和 𝑣 点双连通
+
+对于一个无向图，如果把一个点删除后这个图的极大连通分量数增加了，那么这个点就是这个图的割点（又称割顶）。
+
 一个没有割点的极大连通点集我们称之为一个点双连通分量
 
 分量中任意两点存在没有交集的路径相互到达
 
-在仙人掌图：每条边最多属于一个简单环 中，点双连通分量为环或者连接的双点
+只需求出割点即可得到分量，和求桥的思路类似，只不过这时要判断的是点是否是连接不同分量的必经之路，也即对于 `u v` , 要判断 `v` 能否不通过 `u` 到达更早的节点，因此判定条件是 `low[v] >= dfn[u]`(可以到达 `u`)
+
+但是根节点需要特别判断，根节点是割点的充要条件是 `在dfs树上有至少2个孩子`
 
 ```cpp
-void tarjan(int u,int pa,G& graph){
-  dfn[u] = time++;
-  low[u] = dfn[u];//初始化为自身
-  st.push(u);
+vector<vector<int>> g(maxn);
+vector<bool> ans(maxn,false);
+vector<int> dfn(maxn,-1);
+vector<int> low(maxn);
+int cnt = 0;
+int res = 0;
 
-  for(int v : graph.adj[u]){
-    //遍历邻接表，确定不通过父节点能到达的最小时间戳
-    if(v == pa)continue;//跳过树边
-
-    if(dfn[v] == 0){
-      //未访问,v是子节点,(u,v)是树边,递归到v
-      tarjan(v,u,graph);
-      low[u] = min(low[u],low[v]);//子树递归返回，将子树回边祖先传给u
-    }else{
-      //已经访问，v是祖先,(u,v)是回边
-      low[u] = min(low[u],dfn[v]);//这里low可能已经更新了，要比较后赋值
+void tarjan(int u,int pa) {
+    dfn[u] = low[u] = ++cnt;
+    int child = 0;
+    for (const auto& v:g[u]) {
+        if (v == pa)continue;
+        if (dfn[v] < 0) {
+            child++;
+            tarjan(v,u);
+            if (u != pa && low[v] >= dfn[u] && !ans[u]) {
+                ans[u] = true;
+                res++;
+            }
+            low[u] = min(low[u],low[v]);
+        }else {
+            low[u] = min(low[u],dfn[v]);
+        }
     }
-  }
 
-  //对于所有邻接节点，如果存在v必须通过父节点u才能到达更早节点，则u是一个割点
+    if (u == pa && child >= 2 && !ans[u]) {
+        ans[u] = true;
+        res++;
+    }
 }
 ```
+
+但实际上求分量和求割点应当同时进行，我们把点入栈，遇到条件 `low[v] >= dfn[u]` 时意味着`栈顶直到 v u 是一个分量`，此时无需判断割点
+
+注意孤立自环（读入时忽略自环）、孤立节点情况
+
+```cpp
+vector<vector<int>> g(maxn);
+vector<int> dfn(maxn,-1);
+vector<int> low(maxn);
+vector<vector<int>> bccs;
+int cnt = 0;
+stack<int> st;
+
+void tarjan(int u,int pa) {
+    dfn[u] = low[u] = ++cnt;
+    //最终栈可能非空但不影响我们判断点双
+    st.push(u);
+
+    if (pa == u && g[u].empty()) {
+        bccs.push_back({u});
+        return;
+    }
+
+    for (const auto& v:g[u]) {
+        if (v == pa)continue;
+        if (dfn[v] < 0) {
+            tarjan(v,u);
+            if (low[v] >= dfn[u]) {
+                //栈顶直到v是一个点双
+               vector<int> temp;
+                while (true) {
+                    int t = st.top();
+                    temp.push_back(t);
+                    st.pop();
+                    if (t == v)break;
+                }
+                temp.push_back(u);
+                bccs.push_back(temp);
+            }
+            low[u] = min(low[u],low[v]);
+        }else {
+            low[u] = min(low[u],dfn[v]);
+        }
+    }
+}
+```
+
+## 应用
+1.缩点：
+
+ebcc缩点，得到树，桥作为树边
+
+scc缩点得到 DAG，便于 toposort 和 动态规划
+
+2.ebcc删除任意一条边仍然连通，因为任意两点间存在边不重合的两条路径连接；bcc删除任意一个点仍然连通，因为任意两点间存在点不重合的两条路径连接
