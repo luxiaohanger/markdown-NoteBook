@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>xx.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h3 id="%E7%9C%9F%E7%90%86%E4%B9%8B%E7%94%98%E8%B7%A8%E8%B6%8A%E5%B1%B1%E6%B5%B7%E4%B8%A4%E5%B1%B1%E7%90%86%E5%BF%B5%E4%BA%8C%E5%8D%81%E5%B9%B4%E4%BB%8E%E7%90%86%E5%BF%B5%E9%9D%A9%E6%96%B0%E5%88%B0%E5%85%A8%E7%90%83%E5%85%B1%E5%93%8D%E6%80%9D%E6%94%BF%E8%AF%BE%E6%B1%87%E6%8A%A5%E8%AE%B2%E7%A8%BF">《真理之甘，跨越山海——“两山”理念二十年：从理念革新到全球共响》思政课汇报讲稿</h3>
+<p><strong>（第1页：封面与主题）</strong></p>
+<p>各位老师，各位同学，大家好！我们小组今天汇报的主题是《真理之甘，跨越山海——“两山”理念二十年：从理念革新到全球共响》。</p>
+<p>当我们谈论“绿水青山就是金山银山”时，我们谈论的不仅仅是一个口号，更是一场深刻的发展观革命。今天，就让我们一起穿越二十年的时光，探寻这条始于浙江乡村，最终响彻世界的中国道路。首先，请大家看大屏幕，这幅美丽的画卷是浙江安吉的山水。二十年前，正是这片土地，孕育了一个跨越山海的伟大真理。</p>
+<p><strong>（第2页：核心综述）</strong></p>
+<p>一个伟大的理念，足以重塑一个时代。过去的二十年，是“两山”理念从浙江乡村的朴素洞见，升华为国家战略，并被实践反复证明为科学真理的二十年。那么，它究竟带来了怎样具体的改变呢？数据是最有力的证明：它直接关系到<strong>200万人的生计改善</strong>，撬动了高达<strong>16,000亿元</strong>的绿色产业产值。这充分说明，“两山”理念不仅是一次深邃的理论创新，更展现出强大的实践伟力，真切地改变了中国的发展面貌和无数人的生活。</p>
+<p>让我们通过时间轴，共同回顾这波澜壮阔的二十年。</p>
+<ul>
+<li><strong>2005年</strong>，这一理念在浙江余村首次提出，如同一颗绿色的种子，播撒在中华大地上。</li>
+<li><strong>2017年</strong>，“两山”理念被写入中国共产党的章程，成为全党的共同意志和行动指南。</li>
+<li><strong>2018年</strong>，内涵丰富的习近平生态文明思想正式确立，标志着我们党对生态文明建设的规律性认识达到了新高度。</li>
+<li>而到了<strong>2025年的今天</strong>，在理念提出二十周年的历史节点上，我们已经开启了全面建设人与自然和谐共生的美丽中国的新征程。这二十年，是一步一个脚印，稳步推进的二十年。</li>
+</ul>
+<p><strong>（第3页：理论革新（上）——哲学突破）</strong></p>
+<p>为什么说“两山”理念是一场革命性的变革？因为它从根本上重塑了我们看待发展的哲学基础。</p>
+<ul>
+<li><strong>第一，它超越了“二元对立”</strong>。它彻底否定了那种将人类视为自然主宰、将自然视为无限索取对象的“主客二分”的旧哲学。</li>
+<li><strong>第二，它打破了“宿命论”</strong>。它有力地驳斥了所谓“先污染、后治理”是发展必然阶段的错误论调，鲜明地指出“保护生态环境就是保护生产力，改善生态环境就是发展生产力”。</li>
+<li><strong>第三，也是最重要的，它确立了“辩证统一”</strong>。它让我们深刻认识到，绿水青山与金山银山绝不是非此即彼的“零和博弈”，而是可以相互促进、和谐共生的有机统一体。</li>
+</ul>
+<p><strong>（第4页：理论革新（下）——价值重塑）</strong></p>
+<p>这种新发展观，也带来了一场思想上的“术语革命”。</p>
+<ul>
+<li>我们提出了 <strong>“内生价值论”</strong> ，确认了清新的空气、洁净的水源本身就是宝贵的财富。</li>
+<li>我们强调了 <strong>“系统整体观”</strong> ，将山水林田湖草沙冰视为一个生命共同体，要求我们进行整体性保护。</li>
+<li>我们发展了 <strong>“绿色生产力”</strong> 理论，证明生态优势完全可以转化为经济优势。</li>
+<li>而归根结底，这一切都体现了 <strong>“人民中心论”</strong> ——因为良好的生态环境，是最公平的公共产品，是最普惠的民生福祉，直接关系到我们每一个人的幸福生活。</li>
+</ul>
+<p><strong>（第5页：源起余村）</strong></p>
+<p>理论的伟力，首先在其发源地——浙江余村得到了生动的印证。大家请看对比图：曾经的余村，依靠“炸山卖石”发展经济，虽然一时富裕，但代价是山体破坏、污水横流，生态满目疮痍。<strong>2005年</strong>成为了转折点，余村在“两山”理念指引下，壮士断腕，毅然关停了矿山。转型后的余村，大力发展生态旅游，从“卖石头”变成了“卖风景”，不仅恢复了绿水青山，还成为了联合国认可的“最佳旅游乡村”。早在2016年，这里村民的人均可支配收入就达到了近3.6万元，真正实现了从“环境换取增长”到“环境优化增长”的华丽转身。</p>
+<p><strong>（第6页：浙江范式——机制创新）</strong></p>
+<p>“两山”理念带来的，不仅仅是余村一村之变。整个浙江省都在探索如何让“绿水青山”变现的可持续机制，形成了可复制、可推广的“生态产品价值实现机制”。</p>
+<ul>
+<li>在台州，创新的 <strong>“蓝色循环”</strong> 模式，让渔民回收海洋垃圾的行为可以量化为碳汇进行交易，既净化了海洋，又增加了收入，还荣获了联合国“地球卫士奖”。</li>
+<li>在丽水，建立了生态产品交易中心，成交额超过130亿元，打造的“丽水山耕”农产品品牌，销售额突破160亿元。这些实践雄辩地证明：绿水青山不仅是好看的风景，更是可以入市交易、能够增值的生产性资产。</li>
+</ul>
+<p><strong>（第7页：数字浙江——宏观成就）</strong></p>
+<p>这套绿色的发展机制，有力支撑了浙江的高质量发展。我们来看一组令人振奋的数据对比：</p>
+<ul>
+<li><strong>经济效率上</strong>，浙江以仅占全国<strong>1%</strong> 的土地、<strong>3.4%</strong> 的能源消耗，创造了全国<strong>6.7%</strong> 的GDP。</li>
+<li><strong>社会公平上</strong>，城乡居民收入比显著缩小，农村居民收入连续多年位居全国各省区首位。</li>
+<li><strong>环境质量上</strong>，省控断面优良水质比例从过去的低水平跃升至<strong>98.6%</strong>。
+这组数据清晰地展示了“两山”理念如何实现经济、社会、环境三大效益的协同并进。</li>
+</ul>
+<p><strong>（第8页： 视频）</strong></p>
+<p><strong>（第9页：霍邱答卷——矿山变景山）</strong></p>
+<p>“两山”实践的奇迹，不仅在浙江，也在全国遍地开花。比如安徽霍邱，这里曾是一片废弃的矿坑，是大地上的伤疤。但通过系统性的生态修复工程，如今这里变成了日均接待游客超2000人的“网红”公园。更值得一提的是，当地的西山林场探索“林票变钞票”的创新机制，首张林业碳票就实现了超过200万元的交易价值。这真正是让好空气、好生态变成了“真金白银”，完成了从“生态高颜值”到“经济高价值”的精彩跨越。</p>
+<p><strong>（第10页：重塑中国——国家成就）</strong></p>
+<p>放眼全国，“两山”理念已经深度融入国家发展的顶层设计，驱动着中国发生全面的绿色蝶变。</p>
+<ul>
+<li><strong>在能源领域</strong>，我国可再生能源的装机规模已经历史性地超过了煤电。</li>
+<li><strong>在制造业领域</strong>，中国生产的新能源汽车占全球总量的<strong>65%</strong>，连续十年领跑全球。</li>
+<li><strong>在生态贡献上</strong>，中国是全球增绿最多的国家，贡献了全球新增绿化面积的<strong>四分之一</strong>。
+这些辉煌成就的根源，就在于“两山”理念被写入宪法和党章，成为全社会的共同行动。</li>
+</ul>
+<p><strong>（第11页：中国方案——全球治理）</strong></p>
+<p>中国的探索，也为全球可持续发展贡献了东方智慧。我们成功主办了联合国生物多样性大会（COP15），推动达成了“昆明-蒙特利尔全球生物多样性框架”。“两山”理念的核心内涵连续多年被写入联合国相关决议，这标志着中国正从全球环境治理的参与者，转变为重要的引领者。我们主动向世界分享案例和经验，展现了负责任大国的担当。</p>
+<p><strong>（第12页：赋能世界——供应链与技术）</strong></p>
+<p>中国不仅贡献理念，更提供实实在在的绿色产品和技术。</p>
+<ul>
+<li>中国的光伏组件产能占全球超过<strong>80%</strong>，风电装备占比达<strong>70%</strong>。</li>
+<li>正是凭借中国强大的制造能力和技术创新，过去十年，全球光伏和风电的成本分别下降了超过<strong>80%</strong> 和<strong>60%</strong>，大大加速了全球能源转型的进程。</li>
+<li>通过“绿色一带一路”建设，我们正在帮助发展中国家建设清洁能源项目，推动全球产业链向更加绿色、共生的方向发展。</li>
+</ul>
+<p><strong>（第13页：指引未来——新质生产力）</strong></p>
+<p>站在二十周年的新起点，我们展望未来。未来的关键词是“新质生产力”。而新质生产力的本质特征，恰恰就是绿色、低碳、可持续。这与“两山”理念高度契合、一脉相承。可以预见，“两山”理念将继续作为核心指导原则，贯穿于我们国家“十五五”规划、2035年美丽中国目标乃至“双碳”目标实现的全过程，为中华民族的伟大复兴注入源源不断的绿色动能。</p>
+<p><strong>（第14页：结语与承诺）</strong></p>
+<p>最后，我们想用这样一句话来结束今天的汇报：“两山”理念二十年的非凡历程，雄辩地证明了一个真理：繁荣的生态是永续发展的根本。这条源于中国实践的崭新道路，不仅属于中国，更是中国为全人类开创共享绿色未来所许下的郑重承诺。</p>
+<p>作为新时代的青年，我们应该深刻理解并积极践行这一理念，共同努力，携手共绘人与自然和谐共生的现代化新画卷！</p>
+<p>我们的汇报到此结束，谢谢大家！</p>
+
+</body>
+</html>
