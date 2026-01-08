@@ -97,3 +97,111 @@ minheap.pop();
 
 5.动态最优选择（贪心）
 
+## 堆的实现
+```cpp
+class MaxHeap {
+private:
+    std::vector<int> heap;  
+
+    //上浮和下沉维护堆性质的前提条件是除了待调整元素，其余元素符合堆性质，例如其子树、兄弟树均为合法堆
+
+    //上浮
+    void siftUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;  // 计算父节点位置
+            if (heap[parent] >= heap[index]) {
+                break;  // 已满足大顶堆性质
+            }
+            std::swap(heap[parent], heap[index]);  // 交换父子
+            index = parent;  // 继续向上检查
+        }
+    }
+
+
+    //下沉：主要要求左右子树是合法堆
+    void siftDown(int index) {
+        int size = heap.size();
+        while (true) {
+            int leftChild = 2 * index + 1;  // 左孩子位置
+            int rightChild = 2 * index + 2; // 右孩子位置
+            int largest = index;            // 假设当前节点最大
+
+            // 复习关注点：堆满足的结论
+            // 比较左孩子和当前节点
+            if (leftChild < size && heap[leftChild] > heap[largest]) {
+                largest = leftChild;
+            }
+            // 比较右孩子和当前最大节点
+            if (rightChild < size && heap[rightChild] > heap[largest]) {
+                largest = rightChild;
+            }
+            
+            // 如果当前节点不是最大，需要交换并继续下沉
+            if (largest != index) {
+                std::swap(heap[index], heap[largest]);
+                index = largest;  // 继续向下检查
+            } else {
+                break;  // 已满足堆性质
+            }
+        }
+    }
+
+public:
+    
+    void push(int value) {
+        heap.push_back(value);          // 添加到末尾
+        siftUp(heap.size() - 1);        // 上浮调整
+    }
+
+    int pop() {
+        if (isEmpty()) {
+            throw std::out_of_range("Heap is empty");
+        }
+        
+        int maxValue = heap[0];         // 堆顶元素（最大值）
+        heap[0] = heap.back();         // 末尾元素移到堆顶
+        heap.pop_back();               // 删除末尾元素
+        
+        if (!heap.empty()) {
+            siftDown(0);               // 下沉调整
+        }
+        
+        return maxValue;
+    }
+
+    int top() const {
+        if (isEmpty()) {
+            throw std::out_of_range("Heap is empty");
+        }
+        return heap[0];
+    }
+
+    void buildHeap(const std::vector<int>& array) {
+        // O(n) 的建堆方法
+        heap = array;
+        // 从最后一个非叶子节点开始，是为了保证其左右子树均为合法堆
+        for (int i = heap.size() / 2 - 1; i >= 0; i--) {
+            siftDown(i);
+        }
+    }
+
+    //修改某个元素的值，根据情况选择上浮或下沉
+    void change(int idx,int val){
+        int prev = heap[idx];
+        heap[idx] = val;
+        if(val > prev)shiftUp(idx);
+        if(val < prev)shiftDown(idx);
+    }
+
+    // ---------- 辅助方法 ----------
+    
+    bool isEmpty() const {
+        return heap.empty();
+    }
+    
+    size_t size() const {
+        return heap.size();
+    }
+}
+```
+

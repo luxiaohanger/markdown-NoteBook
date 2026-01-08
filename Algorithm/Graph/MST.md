@@ -28,6 +28,42 @@
 
 `复杂度 : O( 点^2 )`
 
+```cpp
+vector<int> Prim() {
+    vector<int> ans;
+    priority_queue<edge,vector<edge>,cmp> pq;//以边权为比较
+
+    //将0作为起始节点
+    vis[0] = true;
+    int visisted = 1; //记录已访问数量，用于终止
+    for (const auto& e : adj[0]) {
+        pq.push(e);
+    }
+
+    while (!pq.empty()) {
+         //如果不保证有MST要加退出判断
+        if (visisted == n)break;
+        auto e = pq.top();
+        pq.pop();
+        int cnt = 0;
+        if (vis[e.u])cnt++;
+        if (vis[e.v])cnt++;
+        if (cnt == 1) {
+         //符合连接已访问和未访问节点的边
+            ans.push_back(e.idx);
+            int id = vis[e.u] ? e.v : e.u;
+            vis[id] = true;
+            visisted++;
+            for (const auto& x : adj[id]) {
+                pq.push(x);
+            }
+        }
+    }
+
+    return ans;
+}
+```
+
 
 
 ### 选择建议
@@ -38,4 +74,5 @@
 
 ### 难点
 实际情景中边的条数可能非常多，此时要筛选合理的侯选边，降低复杂度
+
 

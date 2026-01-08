@@ -84,3 +84,69 @@ public:
 1.**构造函数和析构函数**不能是 `const` 成员函数  
 2.**静态成员函数**不能是 `const`（因为它们不操作特定对象实例）  
 3.**成员指针**在 `const` 函数中表现为 `T* const`（指针常量），而不是 `const T*`
+
+
+### 更多const
+```cpp
+const void func(const A* const this) const {
+
+}
+```
+
+#### 1. 第一个`const`（在返回类型前）
+```cpp
+const void
+```
+- **含义**：修饰函数的返回类型为`const void`
+- **作用**：在C++中，`const void`作为返回类型实际上**没有实际意义**，因为`void`表示没有返回值，加上`const`并不会改变什么
+
+
+#### 2. 第二个`const`（在参数`A*`前）
+```cpp
+const A*
+```
+- **含义**：指针指向的内容是常量
+- **作用**：通过这个指针**不能修改**所指向的`A`对象的数据成员
+- **示例理解**：
+```cpp
+const A* ptr;  // ptr指向的A对象是const
+ptr->member = 10;  // 错误：不能通过ptr修改A对象
+```
+
+#### 3. 第三个`const`（在`this`前）
+```cpp
+* const this
+```
+- **含义**：指针本身是常量
+- **作用**：`this`指针本身的值（即它指向的地址）**不能改变**
+- **示例理解**：
+```cpp
+A* const ptr;  // ptr本身是const
+ptr = otherPtr;  // 错误：不能改变ptr指向的地址
+```
+
+#### 4. 第四个`const`（在函数末尾）
+```cpp
+) const
+```
+- **含义**：成员函数是常量成员函数
+- **作用**：
+  1. 这个函数**不能修改**类的任何非`mutable`数据成员
+  2. 只能调用其他`const`成员函数
+  3. 在函数内部，`this`指针的类型变为`const A* const`
+
+#### 综合理解
+
+这个函数声明实际上在展示C++成员函数的隐式`this`参数。在C++中，每个非静态成员函数都有一个隐式的`this`指针参数。对于：
+
+```cpp
+class A {
+    void show() const;  // 正常的const成员函数声明
+};
+```
+
+实际上编译器会理解为：
+```cpp
+void show(const A* const this);  // 等价形式
+```
+
