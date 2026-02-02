@@ -58,7 +58,7 @@ git fetch origin
 git pull origin <branch-name>
 
 4.修改仓库
-git remote rename oldname newname
+git remote rename oldname newname  
 git remote set-url name <url>
 
 
