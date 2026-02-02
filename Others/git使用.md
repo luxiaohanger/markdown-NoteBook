@@ -51,11 +51,15 @@ git branch -d <branch-name>
 git remote -v
 
 2.添加远程仓库  
-git remote add origin <url>
+git remote add name <url>
 
 3.从远程获取更新  
 git fetch origin  
 git pull origin <branch-name>
+
+4.修改仓库  
+git remote rename oldname newname  
+git remote set-url name <url>
 
 
 ## 查看与比较
