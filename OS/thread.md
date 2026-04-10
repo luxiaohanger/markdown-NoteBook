@@ -1,3 +1,4 @@
+# 线程
 ## Thread的资源
 在基于进程的多线程模型中（如Linux），每个线程既有与其他线程共享的资源，也有自己独有的资源。
 
@@ -35,13 +36,13 @@
 
 反之，如果多线程同时操作导致了数据错乱、程序崩溃或逻辑错误，我们就称之为**线程不安全**。
 
----
+
 
 ### 1. 核心矛盾：竞态条件（Race Condition）
 
 线程不安全的根源通常是**竞态条件**。当多个线程同时读写同一个共享变量，且最终结果取决于线程执行的“时机”或“顺序”时，问题就产生了。
 
----
+
 
 ### 2. 线程安全必须满足的“三大特性”
 
@@ -53,7 +54,6 @@
     * *背景：* 正如我们之前讨论的 **TSO/RMM** 模型，CPU 缓存可能导致一个核修改了数据，另一个核还在读旧的缓存。
 * **有序性（Ordering）：** 程序执行的顺序按照代码的先后顺序执行，不被编译器或处理器为了优化性能而进行乱序重排。
 
----
 
 ### 3. 如何实现线程安全？
 
@@ -66,7 +66,6 @@
 | **线程局部存储 (TLS)** | 每个线程拥有独立的变量副本，不共享自然安全。 |
 | **不可变对象 (Immutable)** | 数据一旦创建就不允许修改，只读操作永远是安全的。 |
 
----
 
 ### 4. 常见的陷阱：标准库函数
 
@@ -77,3 +76,165 @@
 > **小贴士：** 在 Linux 下，很多非线程安全的函数都有对应的线程安全版本，通常以 `_r` 结尾（如 `strtok_r`）。
 
 ---------
+## 常用函数
+### `pthread_create` (创建线程)
+这是最复杂的函数，其原型如下：
+$$int \space pthread\_create(pthread\_t \space *thread, \space const \space pthread\_attr\_t \space *attr, \space void \space *(*start\_routine) (void \space *), \space void \space *arg);$$
+
+* **`thread`**: 指向线程标识符的指针（就像给新线程一个“身份证号”）。
+* **`attr`**: 线程属性，通常传 `NULL` 使用默认属性。
+* **`start_routine`**: **最关键的部分**。这是一个函数指针，代表线程启动后要执行的任务。
+* **`arg`**: 传递给任务函数的参数。
+
+#### 返回值
+* **成功：** 返回 **`0`**。
+* **失败：** 返回一个**非零的错误码**（具体的错误号）。
+    * 此时，`thread` 参数指向的内容是未定义的。
+    * **常见错误码：**
+        * `EAGAIN`：系统资源不足，无法创建新线程（例如达到了进程的最大线程限制）。
+        * `EINVAL`：设置了无效的属性（`attr`）。
+        * `EPERM`：没有权限设置某些调度策略或属性。
+
+**代码习惯：**
+```c
+if (pthread_create(&tid, NULL, func, arg) != 0) {
+    fprintf(stderr, "创建线程失败！\n");
+}
+```
+
+### `pthread_join` (回收线程)
+$$int \space pthread\_join(pthread\_t \space thread, \space void \space **retval);$$
+* **作用**：主线程会在这里“死等”，直到指定的线程结束。这保证了主程序不会在子任务完成前就提前关掉。
+
+这个函数有两个层面的“返回”：一个是**函数本身的返回值**，另一个是**获取到的子线程结果**。
+
+#### A. 函数自身的返回值（状态）
+* **成功：** 返回 **`0`**。
+* **失败：** 返回一个**非零的错误码**。
+    * **常见错误码：**
+        * `ESRCH`：找不到给定的线程 ID。
+        * `EINVAL`：该线程不是“可连接的”（joinable），或者已经有其他线程在 join 它了。
+        * `EDEADLK`：检测到死锁（例如一个线程尝试 join 自己）。
+
+#### B. 获取子线程的执行结果 (`void **retval`)
+这是通过参数传递回来的。
+* 如果 `retval` 不为 `NULL`，`pthread_join` 会将子线程通过 `pthread_exit(value)` 或 `return value` 传递出来的指针拷贝到 `retval` 指向的内存中。
+
+#### 实例：如何接收返回值
+
+下面的例子展示了如何处理这两个返回值：
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void* task(void* arg) {
+    int* result = malloc(sizeof(int));
+    *result = 42; 
+    pthread_exit(result); // 这里的指针会被 pthread_join 接收
+}
+
+int main() {
+    pthread_t tid;
+    void* thread_result; // 用于接收子线程返回的指针
+
+    // 检查函数自身的返回值
+    int status = pthread_create(&tid, NULL, task, NULL);
+    if (status != 0) {
+        printf("创建失败，错误码: %d\n", status);
+        return 1;
+    }
+
+    // 检查 join 的返回值，并获取子线程的 42
+    status = pthread_join(tid, &thread_result);
+    if (status == 0) {
+        printf("子线程返回了: %d\n", *(int*)thread_result);
+        free(thread_result); // 记得释放子线程 malloc 的内存
+    }
+
+    return 0;
+}
+```
+* **函数本体返回值**：始终用于判断“操作是否成功”（0 为成功）。
+* **`pthread_join` 的第二个参数**：用于“拿回”子线程算好的数据。
+
+### 代码实例：并发计数
+
+下面这个例子展示了如何创建一个子线程来打印数字，同时主线程也在打印。
+
+```c
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// 线程要执行的任务函数
+// 注意：参数和返回值必须是 void* 类型
+void* print_message(void* ptr) {
+    char* message = (char*)ptr;
+    for (int i = 0; i < 5; i++) {
+        printf("子线程: %s - 步骤 %d\n", message, i);
+        sleep(1); // 模拟耗时操作
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t thread_id;
+    char* msg = "正在处理数据";
+
+    // 1. 创建线程
+    // 效果：此时程序产生了一个新的执行流，print_message 开始运行
+    if (pthread_create(&thread_id, NULL, print_message, (void*)msg) != 0) {
+        //返回 0 创建成功，否则返回错误码
+        perror("线程创建失败");
+        return 1;
+    }
+
+    // 2. 主线程继续运行自己的逻辑
+    for (int i = 0; i < 3; i++) {
+        printf("主线程: 正在执行其他任务 %d\n", i);
+        sleep(1);
+    }
+
+    // 3. 等待子线程结束
+    // 效果：主线程运行到这里会阻塞，直到子线程完成循环
+    pthread_join(thread_id, NULL);
+
+    printf("主线程: 所有任务已完成，退出程序。\n");
+    return 0;
+}
+```
+---
+### `pthread_yield()`
+
+在 POSIX Threads (Pthreads) 标准中，对应的函数是 **`pthread_yield()`**（在某些标准中也被称为 `sched_yield()`）。
+
+简单来说，它的语义是：**“我现在不忙，或者我的任务没那么紧急，CPU 可以先去处理别的线程。”**
+
+#### 1. `pthread_yield` 的语法与返回值
+
+$$int \space pthread\_yield(void);$$
+
+* **头文件**：`<pthread.h>`（注意：在某些 Linux 环境下需要定义 `#define _GNU_SOURCE` 才能使用，或者使用更通用的 `<sched.h>` 中的 `sched_yield()`）。
+* **返回值**：成功返回 `0`，失败返回错误码。
+
+
+#### 2. 核心原理：它是如何工作的？
+
+调用 `yield` 实际上是触发了一次**主动的线程切换**。它的工作流程如下：
+
+1.  **放弃 CPU**：当前正在运行的线程停止执行，并从“运行状态”回到“就绪状态”。
+2.  **移至队列末尾**：内核会将该线程移动到其当前优先级队列的**末尾**。
+3.  **重新调度**：操作系统调度器查看当前所有处于就绪状态的线程，选出优先级最高的那一个（可能是另一个线程，也可能是刚才那个刚让权的线程，如果没有其他候选人的话）放入 CPU 执行。
+
+
+#### 3. `yield` vs `sleep`
+
+这是一个常见的混淆点：
+
+| 特性 | `pthread_yield()` | `sleep(n)` |
+| :--- | :--- | :--- |
+| **状态** | 回到 **Ready**（就绪）状态 | 进入 **Waiting/Blocked**（阻塞）状态 |
+| **时间** | 无法确定，可能下一微秒就被重新调度 | 必须等待明确的 `n` 秒后才被唤醒 |
+| **目的** | 礼让同优先级的其他线程 | 纯粹的等待或延时 |
