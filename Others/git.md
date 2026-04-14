@@ -118,3 +118,7 @@ git config --global alias.st status
 
 ## 其他
 1.git bash 要在有.git文件的根目录右键使用
+
+
+## 添加.gitignore后
+git rm -rf --cached .
