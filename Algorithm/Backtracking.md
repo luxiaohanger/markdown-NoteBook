@@ -18,3 +18,19 @@ void backtracking(){
     }
 }
 ```
+
+对于路径寻找类型的递归，可以使用标识位标记是否寻找结束
+```cpp
+void save_path(T* now,T* target,vector<T*>& path,bool& find){
+    if(find || !now)return;
+    path.push_back(now);
+    if(now == target){
+        find = true;
+        return;
+    }
+    for(auto x : next){
+        save_path(x,target,path,find);
+    }
+    if(!find)path.pop_back();
+}
+```
