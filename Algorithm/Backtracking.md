@@ -34,3 +34,25 @@ void save_path(T* now,T* target,vector<T*>& path,bool& find){
     if(!find)path.pop_back();
 }
 ```
+
+对于不能重复的组合问题，可以标记当前元素位置，递归时从标记位置向后遍历
+```cpp
+// 和全排列不同之处在于不能有重复序列，因此可以考虑用顺序排除重复序列
+// 增加枚举起始下标，确保每次枚举的数字都比之前大
+void back_track_78(int n, vector<int>& nums, vector<int>& temp,
+                   vector<vector<int>>& ans, vector<bool>& vis, int start) {
+    if (temp.size() == n) {
+        ans.push_back(temp);
+        return;
+    }
+    for (int i = start; i < nums.size(); ++i) {
+        if (!vis[i]) {
+            temp.push_back(nums[i]);
+            vis[i] = true;
+            back_track_78(n, nums, temp, ans, vis, i + 1);
+            temp.pop_back();
+            vis[i] = false;
+        }
+    }
+}
+```
