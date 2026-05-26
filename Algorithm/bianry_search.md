@@ -36,6 +36,23 @@ while(left<=right){    //答案可能在 [l,r] ,没有找到时退出  注意此
 return -1;
 ```
 
+### 例：查找第一个比target小的元素
+```cpp
+int l = 1;
+int r = len;
+int pos = 0;
+while (l <= r) {
+    int mid = (l + r) / 2;
+    if (nums[i] > dp[mid]) {
+        // 由于答案已经记录下来了
+        // 所以此处无需保证答案在 [l,r]
+        // 而是保证区间收敛
+        l = mid + 1;
+        pos = mid;
+    } else
+        r = mid - 1;
+}```
+
 ## 二维查找
 搜索 m x n 矩阵 matrix 中的一个目标值 target。每行的元素从左到右升序排列。每列的元素从上到下升序排列。
 
